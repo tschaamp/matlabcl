@@ -1,0 +1,4 @@
+CMake not working properly.
+
+Please use build/compile.sh to compile with "mex".
+Include Paths are hardcoded... (should work on mpc711)
