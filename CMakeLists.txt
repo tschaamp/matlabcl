@@ -10,5 +10,5 @@ include(MatlabMexMacro)
 
 include_directories(src)
 
-add_mex_file(plugin src/matlabcl.cc)
-target_link_libraries(plugin ${OPENCL_LIBRARIES})
+add_mex_file(matlabcl src/matlabcl.cc)
+target_link_libraries(matlabcl ${OPENCL_LIBRARIES})
