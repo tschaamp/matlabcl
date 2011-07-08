@@ -1,4 +1,33 @@
-CMake not working properly.
+----------------
+| 1. Compiling |
+----------------
+use cmake and Replace $MATLABROOT 
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$MATLABROOT/extern/include;$MATLABROOT/bin/glnxa64" ..
 
-Please use build/compile.sh to compile with "mex".
-Include Paths are hardcoded... (should work on mpc711)
+This works with 64bit only - others have to change /bin/glnxa64 to their arch.
+
+-----------------
+| 2. Installing |
+-----------------
+- set Matlab path, replace $PLUGINPATH eg where you compiled the Plugin
+> path(path, '$PLUGINPATH')
+
+- You can also change your Matlab working directory to your $PLUGINPATH
+> cd $PLUGINPATH
+
+------------
+| 3. Using | 
+------------
+Built in Kernels for double precision.
+in Matlab simply call:
+> matlabcl('add',M1,M2,...,Mi)
+To add i Matrices together.
+
+>  matlabcl('smul',M/v,s)
+Multiplies matrix M or vector v with the scalar value s.
+
+You can write your own OpenCL kernel and call it from Matlab:
+- replace kernel.cl in $PLUGINPATH with yours
+- run matlabcl with your kernelname as the first argument hand over your values as seen before.

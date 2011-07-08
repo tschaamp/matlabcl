@@ -1,0 +1,3 @@
+- simple (just run matlabcl('kernelname', input1, ... , inputi)
+- keeps context and queue until 'clear' (init only at first run)
+- flexible - can run any kernel located in kernelfile
