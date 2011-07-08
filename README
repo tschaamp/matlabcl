@@ -20,6 +20,8 @@ This works with 64bit only - others have to change /bin/glnxa64 to their arch.
 ------------
 | 3. Using | 
 ------------
+!!! If you simply want to know if everything went right use testmatlabcl.m located in $PLUGINPATH !!!
+
 Built in Kernels for double precision.
 in Matlab simply call:
 > matlabcl('add',M1,M2,...,Mi)

@@ -12,6 +12,9 @@ include_directories(src)
 
 add_mex_file(matlabcl src/matlabcl.cc)
 target_link_libraries(matlabcl ${OPENCL_LIBRARIES})
-execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink 
+execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink
 ${CMAKE_SOURCE_DIR}/src/simple_double.cl
 ${CMAKE_BINARY_DIR}/kernel.cl)
+execute_process(COMMAND ${CMAKE_COMMAND} -E create_symlink 
+${CMAKE_SOURCE_DIR}/src/testmatlabcl.m
+${CMAKE_BINARY_DIR}/testmatlabcl.m)

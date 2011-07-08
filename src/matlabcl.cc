@@ -14,17 +14,15 @@ using namespace cl;
 using namespace std;
 
 //Create vars
-Program program;
-vector<Device> devices;
-Context context;
-Context *contextptr;
-CommandQueue *queue;
-Kernel kernel;
+Program         program;
+vector<Device>  devices;
+Context         context;
+Context         *contextptr;
+CommandQueue    *queue;
+Kernel          kernel;
 
 vector<Buffer*> inputBuffers;
-
-// Allocate memory for output
-cl_double *result;
+cl_double       *result;
 
 void initCL() {
     // Get queue and devices
@@ -50,12 +48,12 @@ void initCL() {
        std::cout << error.what() << "(" << error.err() << ")" << std::endl;
     }
 }
+
 void createBuffers(int nrhs, const mxArray *prhs[]) {
     Buffer *inputBuffer;
     try {
         for(int i=1; i<nrhs; i++) {
             const mxArray *cur = prhs[i];
-            void *data = mxGetData(cur);
             int m = mxGetM(cur);
             int n = mxGetN(cur);
             std::size_t cursize = n*m*mxGetElementSize(cur);
@@ -73,8 +71,8 @@ void dynamicReplace(std::string *sourceCode, int nrhs) {
     std::stringstream vars;
     std::stringstream func;
     func << 0;
-    for (uint i=1; i<nrhs;i++) {
-        vars << ", __global __read_only double *m"<<i;
+    for (uint i=1; i<nrhs; i++) {
+        vars << ", __global __read_only double *m" << i;
         func << "+m" << i << "[pos]";
     }
     std::string token1 = "?1";
@@ -83,20 +81,20 @@ void dynamicReplace(std::string *sourceCode, int nrhs) {
     // find token1
     int begin1 = (*sourceCode).find(token1);
     while (begin1 != -1 && begin1 < (*sourceCode).length()) {
-        (*sourceCode).replace(begin1,token1.length(),vars.str());
+        (*sourceCode).replace(begin1, token1.length(), vars.str());
         begin1 = (*sourceCode).find(token1);
     }
 
     // find token2
     int begin2 = (*sourceCode).find(token2);
     while (begin2 != -1 && begin2 < (*sourceCode).length()) {
-        (*sourceCode).replace(begin2,token2.length(),func.str());
+        (*sourceCode).replace(begin2, token2.length(), func.str());
         begin2 = (*sourceCode).find(token2);
     }
 }
 
 void buildDynamicKernel(std::string kernelname, int nrhs) {
-    // Build and Run Kernel
+    // Build Kernel
     try { 
         // Read source file
         std::ifstream sourceFile("kernel.cl");
@@ -110,7 +108,7 @@ void buildDynamicKernel(std::string kernelname, int nrhs) {
         Program::Sources source(1, std::make_pair(sourceCode.c_str(), sourceCode.length()+1));
 
         // Check if kernelname in sourcefile
-        if (sourceCode.find("__kernel void "+kernelname, 0) == 
+        if (sourceCode.find("__kernel void " + kernelname, 0) == 
             std::string::npos) {
             throw "Kernel not found.";
         }
@@ -134,7 +132,7 @@ void buildDynamicKernel(std::string kernelname, int nrhs) {
 double* runKernel(unsigned int width, unsigned int height) {
     // Create the host image
     std::size_t matrixsize = width * height * sizeof(cl_double);
-    cl_double *matrix   = (cl_double*) malloc(matrixsize);
+    cl_double *matrix      = (cl_double*) malloc(matrixsize);
 
     // Run Kernel
     try { 
@@ -159,15 +157,6 @@ double* runKernel(unsigned int width, unsigned int height) {
     }
 
     return matrix; 
-}
-
-// Prints given Matrix to stdout
-void printMatrixToStdOut(double *matrix, unsigned int width, unsigned int height) {
-    for(unsigned int i=0; i<height; i++) {
-        for(unsigned int j=0; j<width; j++) {
-            printf("x:%i,y:%i=%f\n", i, j, matrix[(i*width)+j]);
-        }
-    }
 }
 
 // clean up
